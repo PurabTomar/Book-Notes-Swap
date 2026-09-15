@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SATI Swap — Interactive Prototype</title>
+<style>
+  :root{
+    --bg:#0b141a; --chat-bg:#202c33; --surface:#111b21; --border:rgba(255,255,255,.08);
+    --text:#e9edef; --muted:#8696a0; --primary:#10b981; --primary-dark:#059669;
+    --bubble-out:#005c4b; --bubble-in:#202c33; --danger:#ef4444; --free:#f59e0b;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:Roboto,"Segoe UI",system-ui,-apple-system,sans-serif; background:#0a0f13; color:var(--text); display:flex; justify-content:center;}
+  .phone{width:420px; max-width:100vw; height:100vh; background:var(--bg); position:relative; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 0 40px rgba(0,0,0,.6);}
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:var(--surface); border-bottom:1px solid var(--border);}
+  .topbar .title{font-weight:800; font-size:19px; letter-spacing:-.02em;}
+  .topbar .title span{color:var(--primary);}
+  .topbar .icons{display:flex; gap:18px; color:var(--muted); font-size:18px;}
+  .tabs{display:flex; background:var(--surface); border-bottom:1px solid var(--border);}
+  .tabs button{flex:1; background:none; border:none; color:var(--muted); font-weight:700; font-size:14px; padding:12px 0 10px; cursor:pointer; border-bottom:3px solid transparent;}
+  .tabs button.active{color:var(--primary); border-bottom-color:var(--primary);}
+  main{flex:1; overflow-y:auto; overscroll-behavior:contain;}
+  main::-webkit-scrollbar{display:none;}
+  .fav{display:flex; gap:10px; overflow-x:auto; padding:12px 16px; background:var(--surface); border-bottom:1px solid var(--border);}
+  .fav::-webkit-scrollbar{display:none;}
+  .fav-item{display:flex; flex-direction:column; align-items:center; gap:5px; min-width:64px; cursor:pointer;}
+  .fav-item .ring{width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:24px;}
+  .fav-item .ring.fresh{outline:3px solid var(--primary); outline-offset:2px;}
+  .fav-item span{font-size:11px; color:var(--muted); text-align:center; width:72px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .chat-row{display:flex; gap:12px; padding:12px 16px; cursor:pointer; position:relative; transition:background .1s;}
+  .chat-row:hover,.chat-row:active{background:var(--surface);}
+  .chat-row:not(:last-child)::after{content:""; position:absolute; left:76px; right:0; bottom:0; border-bottom:1px solid var(--border);}
+  .thumb{width:48px; height:48px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:22px; background:linear-gradient(135deg,#274, #2a9d8f);}
+  .chat-row .body{flex:1; min-width:0;}
+  .chat-row .top{display:flex; justify-content:space-between; align-items:baseline;}
+  .chat-row .name{font-weight:700; font-size:15px;}
+  .chat-row .time{font-size:11px; color:var(--muted);}
+  .chat-row .sub{font-size:13px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
+  .chat-row .price{font-weight:800; font-size:14px; color:var(--primary);}
+  .chat-row .price.free{color:var(--free);}
+  .badge{display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:700; color:var(--primary); margin-left:4px;}
+  .verified{color:var(--primary); font-size:13px;}
+  .fab{position:absolute; right:18px; bottom:84px; width:60px; height:60px; border-radius:50%; background:var(--primary); color:#fff; border:none; font-size:28px; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(16,185,129,.45); z-index:10;}
+  .fab:active{transform:scale(.94);}
+  .bottom-nav{display:flex; background:var(--surface); border-top:1px solid var(--border); padding:6px 0 calc(6px + env(safe-area-inset-bottom));}
+  .bottom-nav button{flex:1; background:none; border:none; color:var(--muted); font-size:11px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; cursor:pointer;}
+  .bottom-nav button.active{color:var(--primary);}
+  .bottom-nav .ico{font-size:21px; line-height:1;}
+  .card{background:var(--surface); border-radius:16px; margin:12px 16px; padding:16px; border:1px solid var(--border);}
+  .card img,.card .ph{width:100%; aspect-ratio:4/3; border-radius:12px; object-fit:cover; background:#263238; display:flex; align-items:center; justify-content:center; font-size:52px;}
+  .card h3{margin:12px 0 2px; font-size:17px;}
+  .card .meta{color:var(--muted); font-size:13px;}
+  .chips{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
+  .chip{font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; background:#263238; color:var(--muted);}
+  .chip.cat{background:#023a30; color:var(--primary);}
+  .chip.free{background:#3b2c06; color:var(--free);}
+  .seller{display:flex; align-items:center; gap:10px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border);}
+  .seller .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;}
+  .seller .nm{font-weight:700; font-size:14px;}
+  .seller .br{color:var(--muted); font-size:12px;}
+  .btn-primary{display:block; width:100%; margin-top:14px; padding:13px; border:none; border-radius:12px; background:var(--primary); color:#04120c; font-weight:800; font-size:15px; cursor:pointer;}
+  .btn-primary:active{background:var(--primary-dark);}
+  .back{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:6px 8px 6px 0;}
+  .chat-head{display:flex; align-items:center; gap:10px; padding:8px 16px; background:var(--surface); border-bottom:1px solid var(--border);}
+  .chat-head .nm{font-weight:700; font-size:15px;}
+  .chat-head .st{font-size:12px; color:var(--muted);}
+  .messages{flex:1; overflow-y:auto; padding:14px 14px 6px; display:flex; flex-direction:column; gap:6px; background:var(--bg);}
+  .messages::-webkit-scrollbar{display:none;}
+  .bubble{max-width:78%; padding:8px 10px; border-radius:10px; font-size:14px; line-height:1.4; position:relative;}
+  .bubble .t{display:block; text-align:right; font-size:10px; color:var(--muted); margin-top:3px;}
+  .out{align-self:flex-end; background:var(--bubble-out); border-top-right-radius:2px;}
+  .in{align-self:flex-start; background:var(--bubble-in); border-top-left-radius:2px;}
+  .input-bar{display:flex; gap:10px; padding:10px 12px; background:var(--surface); border-top:1px solid var(--border);}
+  .input-bar input{flex:1; border:none; background:var(--chat-bg); color:var(--text); border-radius:999px; padding:11px 16px; font-size:14px; outline:none;}
+  .input-bar button{width:44px; height:44px; border-radius:50%; border:none; background:var(--primary); color:#04120c; font-size:18px; cursor:pointer;}
+  .sheet{position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:20; display:none;}
+  .sheet.show{display:block;}
+  .sheet .panel{position:absolute; bottom:0; left:0; right:0; background:var(--surface); border-radius:18px 18px 0 0; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); animation:up .24s ease-out;}
+  @keyframes up{from{transform:translateY(100%);}to{transform:translateY(0);}}
+  .sheet h4{margin:0 0 14px; font-size:16px; text-align:center; color:var(--text);}
+  .cat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  .cat{display:flex; flex-direction:column; align-items:center; gap:6px; background:var(--chat-bg); border:1px solid var(--border); border-radius:14px; padding:14px 6px; font-size:11px; color:var(--muted); cursor:pointer;}
+  .cat:active{background:#263238;}
+  .cat .em{font-size:24px;}
+  .cmodel{position:absolute; inset:0; background:var(--bg); z-index:30; display:none; overflow-y:auto;}
+  .cmodel.show{display:block;}
+  .notif{position:absolute; top:64px; left:50%; transform:translateX(-50%); background:var(--primary); color:#04120c; font-weight:800; font-size:13px; padding:9px 16px; border-radius:999px; z-index:40; box-shadow:0 4px 16px rgba(0,0,0,.4); opacity:0; transition:opacity .2s, top .2s;}
+  .notif.show{opacity:1; top:80px;}
+  .count{width:18px;height:18px;border-radius:50%;background:var(--danger);color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;position:absolute;top:-2px;right:26px;}
+  .count.show{display:flex;}
+  [data-screen]{display:none;}
+  [data-screen].active{display:block; height:100%;}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===== Notifications ===== -->
+  <div class="cmodel" id="toast"><div style="padding:40px 24px;text-align:center;color:var(--muted)">Placeholder screen</div></div>
+  <div class="notif" id="notif">Message sent!</div>
+
+  <!-- ===== POPUP: Category Sheet ===== -->
+  <div class="sheet" id="sheet">
+    <div class="panel">
+      <h4>What are you sharing?</h4>
+      <div class="cat-grid">
+        <div class="cat" data-cat="Book"><span class="em">📚</span>Book</div>
+        <div class="cat" data-cat="Notes"><span class="em">📝</span>Notes</div>
+        <div class="cat" data-cat="Lab Manual"><span class="em">🧪</span>Lab Manual</div>
+        <div class="cat" data-cat="PYQ"><span class="em">📄</span>PYQ</div>
+        <div class="cat" data-cat="Drawing"><span class="em">📐</span>Drawing</div>
+        <div class="cat" data-cat="Calculator"><span class="em">🧮</span>Calculator</div>
+        <div class="cat" data-cat="Other"><span class="em">📎</span>Other</div>
+        <div class="cat" data-cat="FREEW"><span class="em" style="color:var(--free)">🎁</span>FREE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== POPUP: Right drawer ===== -->
+  <div class="sheet" id="menuSheet">
+    <div class="panel">
+      <h4 style="text-align:left">Menu</h4>
+      <div class="cat-grid" style="grid-template-columns:1fr 1fr">
+        <div class="cat" data-menu="saved"><span class="em">⭐</span>Saved</div>
+        <div class="cat" data-menu="mylist"><span class="em">🗂️</span>My Listings</div>
+        <div class="cat" data-menu="profile"><span class="em">👤</span>Profile</div>
+        <div class="cat" data-menu="verify"><span class="em">✅</span>Verify</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: Home feed ===== -->
+  <div data-screen="home" class="active">
+    <div class="topbar">
+      <div class="title">SATI <span>Swap</span></div>
+      <div class="icons">🔍 <span id="menuBtn" style="cursor:pointer">⋮</span></div>
+    </div>
+    <div class="tabs">
+      <button class="active" data-tab="chats">Chats</button>
+      <button data-tab="updates">Updates</button>
+      <button data-tab="saved">Saved</button>
+    </div>
+    <main id="feedMain">
+      <div class="fav">
+        <div class="fav-item"><div class="ring fresh">🔍</div><span>Search</span></div>
+        <div class="fav-item"><div class="ring">📚</div><span>Books</span></div>
+        <div class="fav-item"><div class="ring">📝</div><span>Notes</span></div>
+        <div class="fav-item"><div class="ring">🧪</div><span>Lab Manuals</span></div>
+        <div class="fav-item"><div class="ring">📄</div><span>PYQs</span></div>
+        <div class="fav-item"><div class="ring">🧮</div><span>Calc</span></div>
+      </div>
+      <div id="chatList"></div>
+    </main>
+    <button class="fab" id="fab">＋</button>
+    <div class="bottom-nav">
+      <button class="active" data-nav="home"><span class="ico">💬</span>Chats</button>
+      <button data-nav="updates"><span class="ico">🕘</span>Updates</button>
+      <button data-nav="saved"><span class="ico">⭐</span>Saved</button>
+      <button data-nav="profile"><span class="ico">☰</span>Menu</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: Listing detail ===== -->
+  <div data-screen="detail">
+    <div class="topbar">
+      <button class="back" data-back>‹</button>
+      <div class="title" style="font-size:15px" id="detailTitle">Listing</div>
+      <div class="icons">⋮</div>
+    </div>
+    <main id="detailMain"></main>
+  </div>
+
+  <!-- ===== SCREEN: Chat window ===== -->
+  <div data-screen="chat">
+    <div class="chat-head">
+      <button class="back" data-back>‹</button>
+      <div>
+        <div class="nm" id="chatName">Ravi Kumar</div>
+        <div class="st" id="chatSub">CSE • 2nd Year • online</div>
+      </div>
+      <div style="margin-left:auto" class="icons">⋮</div>
+    </div>
+    <div class="messages" id="chatMessages"></div>
+    <div class="input-bar">
+      <input id="chatInput" placeholder="Type a message" />
+      <button id="sendBtn">➤</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: Saved ===== -->
+  <div data-screen="saved">
+    <div class="topbar"><div class="title" style="font-size:16px">⭐ Saved</div></div>
+    <main id="savedMain"></main>
+  </div>
+
+  <!-- ===== SCREEN: My listings ===== -->
+  <div data-screen="mylist">
+    <div class="topbar"><div class="title" style="font-size:16px">🗂️ My Listings</div></div>
+    <main id="myListMain"></main>
+  </div>
+
+  <!-- ===== SCREEN: Profile ===== -->
+  <div data-screen="profile">
+    <div class="topbar"><div class="title" style="font-size:16px">👤 Profile</div></div>
+    <main id="profileMain"></main>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Data ----------
+  const ME = { name:"You", branch:"CSE", year:2, verified:true };
+  const people = {
+    ravi:{ name:"Ravi Kumar", br:"CSE", yr:2, em:"📚" },
+    ankit:{ name:"Ankit Jain", br:"IoT", yr:2, em:"📝" },
+    priya:{ name:"Priya Singh", br:"ECE", yr:1, em:"🧪" },
+    aman:{ name:"Aman Verma", br:"CSE", yr:2, em:"📄" },
+    neha:{ name:"Neha Tiwari", br:"ME", yr:3, em:"🧮" },
+    rohit:{ name:"Rohit Gupta", br:"Civil", yr:4, em:"📐" },
+  };
+  let listings = [
+    { id:1, seller:"ravi", title:"Engineering Physics – 3rd Ed", cat:"Book", sub:"Sem 1 • ₹250", price:250, time:"2m", free:false, em:"📚", cond:"Good" },
+    { id:2, seller:"ankit", title:"IoT Handwritten Notes (all units)", cat:"Notes", sub:"Sem 4 • FREE", price:0, time:"18m", free:true, em:"📝", cond:"New" },
+    { id:3, seller:"priya", title:"Chemistry Lab Manual", cat:"Lab Manual", sub:"Sem 1 • ₹80", price:80, time:"1h", free:false, em:"🧪", cond:"Fair" },
+    { id:4, seller:"aman", title:"PYQ Pack – Sem 2 (All Subjects)", cat:"PYQ", sub:"Sem 2 • ₹90", price:90, time:"3h", free:false, em:"📄", cond:"Good" },
+    { id:5, seller:"neha", title:"Scientific Calculator (FX-991)", cat:"Calculator", sub:"Sem 3 • ₹600", price:600, time:"5h", free:false, em:"🧮", cond:"New" },
+    { id:6, seller:"rohit", title:"Engineering Drawing Sheet Set", cat:"Drawing", sub:"Sem 1 • FREE", price:0, time:"8h", free:true, em:"📐", cond:"Good" },
+  ];
+  let saved = new Set([2]);
+  let conversations = {
+    1: [
+      { from:"them", text:"Hi! Is this book still available?", time:"9:42 PM" },
+    ],
+    2: [
+      { from:"them", text:"Yes, the notes are with me.", time:"10:05 AM" },
+      { from:"me", text:"Can we meet near the library?", time:"10:06 AM" },
+    ],
+  };
+  const unread = { 1:1 };
+
+  // ---------- Helpers ----------
+  const $ = (s)=>document.querySelector(s);
+  const $$ = (s)=>document.querySelectorAll(s);
+  const esc = (s)=>String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  function notify(msg){ const n=$("#notif"); n.textContent=msg; n.classList.add("show"); setTimeout(()=>n.classList.remove("show"),1500); }
+  function openScreen(name){
+    $$("[data-screen]").forEach(el=>el.classList.remove("active"));
+    $(`[data-screen="${name}"]`).classList.add("active");
+    syncNav(name);
+  }
+  function syncNav(name){
+    $$(".bottom-nav button").forEach(b=>b.classList.toggle("active", b.dataset.nav===name));
+    const tabMap={home:"chats",saved:"saved"};
+    $$(".tabs button").forEach(b=>b.classList.toggle("active", tabMap[name]===b.dataset.tab));
+  }
+  function showTab(tab, active){
+    $$(".tabs button").forEach(b=>b.classList.toggle("active", b.dataset.tab===active));
+    if(tab==="saved"){ renderSaved(); openScreen("saved"); return; }
+  }
+
+  // ---------- Feed rendering ----------
+  function rowHTML(l){
+    const p=people[l.seller];
+    const price = l.free ? `<span class="price free">FREE</span>` : `<span class="price">₹${l.price}</span>`;
+    return `<div class="chat-row" data-id="${l.id}">
+      <div class="thumb">${l.em}</div>
+      <div class="body">
+        <div class="top">
+          <span class="name">${esc(l.title)}</span>
+          <span class="time">${l.time}</span>
+        </div>
+        <div class="sub">${p.name} <span class="verified">✔</span> • ${p.br} • ${p.yr}${+p.yr===1?"st":+p.yr===2?"nd":+p.yr===3?"rd":"th"} Year</div>
+        <div class="top"><span class="price ${l.free?'free':''}">${l.free?"":""}${price}</span><span class="price" style="color:var(--muted);font-size:12px;font-weight:400">${l.cat}</span></div>
+      </div>
+    </div>`;
+  }
+  function renderFeed(){
+    const list = listings.filter(l=>l.seller!=="rohit"||saved.has(l.id));
+    // exclude "rohit" free drawing listing from default feed to show variety via search instead
+    const active = listings.filter(l=>l.id!==6 || saved.has(l.id));
+    $("#chatList").innerHTML = active.map(rowHTML).join("");
+    // unread dot
+    const hasUnread=Object.keys(unread).length>0;
+    if(hasUnread) notify("New message from Ravi");
+  }
+  function renderDetail(id){
+    const l=listings.find(x=>x.id===+id); if(!l) return;
+    const p=people[l.seller];
+    $("#detailTitle").textContent=l.title;
+    $("#detailMain").innerHTML = `<div class="card">
+      <div class="ph">${l.em}</div>
+      <h3>${esc(l.title)}</h3>
+      <div class="meta">${esc(l.cat)} • ${l.cond} condition</div>
+      <div class="chips">
+        <span class="chip cat">${esc(l.cat)}</span>
+        <span class="chip">${l.cond}</span>
+        ${l.free?`<span class="chip free">FREE</span>`:""}
+        <span class="chip">SEM 1-2</span>
+      </div>
+      <div class="seller">
+        <div class="av">${p.name[0]}</div>
+        <div><div class="nm">${p.name} <span class="verified">✔</span></div>
+        <div class="br">${p.br} • ${p.yr}${+p.yr===1?"st":+p.yr===2?"nd":"rd"} Year</div></div>
+      </div>
+      <div style="margin-top:12px;color:var(--muted);font-size:13px">📍 Pickup: SATI Library (common)</div>
+      <button class="btn-primary" data-chat="${l.id}">💬 Chat with ${p.name.split(" ")[0]}</button>
+      <button class="btn-primary" style="background:transparent;color:var(--primary);border:1px solid var(--primary)" data-save="${l.id}">${saved.has(l.id)?"★ Saved":"☆ Save"}</button>
+    </div>`;
+  }
+  function renderSaved(){
+    const rows = listings.filter(l=>saved.has(l.id));
+    $("#savedMain").innerHTML = rows.length ? `<div id="savedList">${rows.map(rowHTML).join("")}</div>`
+      : `<div style="text-align:center;color:var(--muted);padding:60px 20px">Nothing saved yet.<br>Tap ☆ on a listing to keep it.</div>`;
+  }
+  function renderMyList(){
+    const mine = listings.filter(l=>l.seller==="ravi" || l.seller==="aman");
+    $("#myListMain").innerHTML = mine.length ? `<div id="savedList">${mine.map(rowHTML).join("")}</div>`
+      : `<div style="text-align:center;color:var(--muted);padding:60px 20px">You haven't posted anything yet.</div>`;
+  }
+  function renderProfile(){
+    const stats = listings.length;
+    $("#profileMain").innerHTML = `<div class="card" style="text-align:center">
+      <div class="av" style="width:72px;height:72px;font-size:30px;margin:0 auto">${ME.name[0]}</div>
+      <h3>${ME.name} <span class="verified">✔</span></h3>
+      <div class="meta">${ME.branch} • ${ME.year}nd Year • Sem 4</div>
+      <div class="chips" style="justify-content:center">
+        <span class="chip cat">Verified</span>
+        <span class="chip">${stats} live listings</span>
+        <span class="chip">⭐ 4.8</span>
+      </div>
+      <button class="btn-primary" data-menu="mylist" style="background:transparent;color:var(--primary);border:1px solid var(--primary)">🗂️ My Listings</button>
+    </div>`;
+  }
+
+  // ---------- Chat ----------
+  function openChat(listingId){
+    const l=listings.find(x=>x.id===+listingId); if(!l) return;
+    const p=people[l.seller];
+    $("#chatName").textContent=p.name;
+    $("#chatSub").textContent=`${p.br} • ${p.yr}${+p.yr===1?"st":+p.yr===2?"nd":"rd"} Year • online`;
+    if(!conversations[listingId]) conversations[listingId]=[{from:"them",text:`Hi! I'm selling "${l.title}". Let me know if you're interested.`,time:"now"}];
+    delete unread[listingId];
+    renderMessages(listingId);
+    openScreen("chat");
+    $("#chatInput").dataset.listing=listingId;
+    setTimeout(()=>{$("#chatInput").focus();},100);
+  }
+  function renderMessages(id){
+    const msgs=conversations[id]||[];
+    $("#chatMessages").innerHTML = msgs.map(m=>`
+      <div class="bubble ${m.from==="me"?"out":"in"}">${esc(m.text)}<span class="t">${m.time} ${m.from==="me"?"✓✓":""}</span></div>`).join("");
+    const el=$("#chatMessages"); el.scrollTop=el.scrollHeight;
+  }
+  $("#sendBtn").addEventListener("click",()=>{
+    const inp=$("#chatInput");
+    const text=inp.value.trim(); if(!text) return;
+    const id=inp.dataset.listing;
+    if(!conversations[id]) conversations[id]=[];
+    const h=new Date(); let hh=h.getHours(),mm=h.getMinutes(),ap="AM";
+    if(hh>=12){ap="PM"; if(hh>12)hh-=12;} if(hh===0)hh=12;
+    conversations[id].push({from:"me", text, time:`${hh}:${String(mm).padStart(2,"0")} ${ap}`});
+    inp.value="";
+    renderMessages(id);
+    notify("Message sent");
+  });
+  $("#chatInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault();$("#sendBtn").click();} });
+
+  // ---------- Event wiring ----------
+  $('#chatList').addEventListener("click",e=>{ const r=e.target.closest(".chat-row"); if(r) openChat(r.dataset.id); });
+  $("#savedMain").addEventListener("click",e=>{ const r=e.target.closest(".chat-row"); if(r) openChat(r.dataset.id); });
+  $("#myListMain").addEventListener("click",e=>{ const r=e.target.closest(".chat-row"); if(r) openChat(r.dataset.id); });
+  $("#detailMain").addEventListener("click",e=>{
+    const chat=e.target.closest("[data-chat]"); if(chat){ openChat(chat.dataset.chat); return; }
+    const sv=e.target.closest("[data-save]");
+    if(sv){ const id=+sv.dataset.save; saved.has(id)?saved.delete(id):saved.add(id); renderDetail(id); notify(saved.has(id)?"Saved to favorites":"Removed from saved"); }
+  });
+  $("#fab").addEventListener("click",()=>$("#sheet").classList.add("show"));
+  $("#sheet").addEventListener("click",e=>{
+    if(e.target.id==="sheet"){$("#sheet").classList.remove("show");return;}
+    const c=e.target.closest(".cat");
+    if(c){ $("#sheet").classList.remove("show"); notify(c.dataset.cat==="FREEW"?"Free posting coming soon!":"New listing form… (Phase 3)"); }
+  });
+  $("#menuSheet").addEventListener("click",e=>{
+    if(e.target.id==="menuSheet"){$("#menuSheet").classList.remove("show");return;}
+    const c=e.target.closest("[data-menu]");
+    if(c){ $("#menuSheet").classList.remove("show"); switch(c.dataset.menu){
+      case "saved": renderSaved(); openScreen("saved"); break;
+      case "mylist": renderMyList(); openScreen("mylist"); break;
+      case "profile": renderProfile(); openScreen("profile"); break;
+      case "verify": notify("Verification sent to your SATI email"); break;
+    }}
+  });
+  $("#menuBtn").addEventListener("click",()=>$("#menuSheet").classList.add("show"));
+  $$(".bottom-nav button").forEach(b=>b.addEventListener("click",()=>{
+    const n=b.dataset.nav;
+    if(n==="updates"){ notify("Updates detail — Phase 2"); }
+    else if(n==="home"){ renderFeed(); openScreen("home"); }
+    else if(n==="saved"){ renderSaved(); openScreen("saved"); }
+    else if(n==="profile"){ renderProfile(); openScreen("profile"); }
+  }));
+  $$(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+    if(b.dataset.tab==="chats"){ renderFeed(); openScreen("home"); }
+    else if(b.dataset.tab==="updates"){ notify("Updates detail — Phase 2"); }
+    else { renderSaved(); openScreen("saved"); }
+  }));
+  $$("[data-back]").forEach(b=>b.addEventListener("click",()=>{ renderFeed(); openScreen("home"); }));
+  // fav rail
+  document.querySelectorAll(".fav-item").forEach(c=>c.addEventListener("click",()=>{
+    const lbl=c.querySelector("span").textContent;
+    if(lbl==="Search") notify("Search screen — Phase 2");
+    else notify(`${lbl} filter coming soon`);
+  }));
+
+  // ---------- Boot ----------
+  renderFeed();
+})();
+</script>
+</body>
+</html>
