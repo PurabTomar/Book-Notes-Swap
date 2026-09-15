@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { timeAgo } from "../lib/format.js";
 import { subjectImage, FALLBACK_IMAGE } from "../data/constants.js";
@@ -18,18 +19,44 @@ const RESOURCE_BADGE_COLORS = {
   "Other": { bg: "#f9fafb", color: "#6b7280" },
 };
 
+const BOOKMARKS_KEY = "bns-bookmarks";
+
+function readBookmarks() {
+  try {
+    return JSON.parse(localStorage.getItem(BOOKMARKS_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
 export default function ListingCard({ listing }) {
   const free = listing.is_free || listing.price == null || Number(listing.price) === 0;
   const cardImage = listing.photo_url || subjectImage(listing.subject);
   const resourceType = listing.resource_type || "Other";
   const badgeStyle = RESOURCE_BADGE_COLORS[resourceType] || RESOURCE_BADGE_COLORS["Other"];
+  const [bookmarked, setBookmarked] = useState(() => readBookmarks().includes(listing.id));
+
+  function toggleBookmark(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const next = [...readBookmarks()];
+    const idx = next.indexOf(listing.id);
+    if (idx >= 0) next.splice(idx, 1);
+    else next.push(listing.id);
+    try {
+      localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(next));
+    } catch {
+      /* storage unavailable */
+    }
+    setBookmarked(!bookmarked);
+  }
 
   return (
     <Link to={`/listing/${listing.id}`} className="listing-card">
       <div className="listing-card__img-wrap">
         <img
           src={cardImage}
-          alt={listing.title}
+          alt={`${listing.title} — ${resourceType}, semester ${listing.semester}`}
           className="listing-card__img"
           loading="lazy"
           onError={(e) => {
@@ -39,6 +66,16 @@ export default function ListingCard({ listing }) {
           }}
         />
         {free && <span className="listing-card__badge listing-card__badge--free">FREE</span>}
+        <button
+          className={`bookmark-btn ${bookmarked ? "bookmark-btn--active" : ""}`}
+          onClick={toggleBookmark}
+          aria-label={bookmarked ? "Remove from bookmarks" : "Save to bookmarks"}
+          title={bookmarked ? "Remove from bookmarks" : "Save to bookmarks"}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill={bookmarked ? "#fde047" : "none"} stroke={bookmarked ? "#ca8a04" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+          </svg>
+        </button>
       </div>
       <div className="listing-card__body">
         <div className="listing-card__badges">

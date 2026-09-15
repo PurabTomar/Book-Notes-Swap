@@ -41,15 +41,25 @@ function FilterSelect({
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // All selectable options come from EITHER flat `options` OR `groups`.
+  // Resolve them into one canonical list so the trigger label and the
+  // highlighted item always agree, regardless of which prop the app passes.
+  const flatFromGroups = groups
+    ? Object.values(groups).flat().filter(Boolean)
+    : [];
+
+  const allOptions =
+    flatFromGroups.length > 0 ? flatFromGroups : options || [];
+
   const displayLabel = value
-    ? options?.find((o) => o.value === value)?.label || value
+    ? allOptions.find((o) => o.value === value)?.label || value
     : label;
 
   const filteredOptions = searchable
-    ? (options || []).filter((o) =>
+    ? allOptions.filter((o) =>
         o.label.toLowerCase().includes(search.toLowerCase())
       )
-    : options || [];
+    : allOptions;
 
   const filteredGroups = groups
     ? Object.entries(groups).reduce((acc, [key, items]) => {
@@ -141,8 +151,27 @@ export default function BrowsePage() {
   const [dbError, setDbError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("newest");
+  const [sortOpen, setSortOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   const debouncedSearch = useDebounce(search, 250);
+
+  const PAGE_SIZE = 12;
+
+  const sortLabels = {
+    newest: "Newest first",
+    oldest: "Oldest first",
+    semester_asc: "Semester (low → high)",
+    semester_desc: "Semester (high → low)",
+  };
+
+  const sortOrders = {
+    newest: { column: "created_at", ascending: false },
+    oldest: { column: "created_at", ascending: true },
+    semester_asc: { column: "semester", ascending: true },
+    semester_desc: { column: "semester", ascending: false },
+  };
 
   const activeFilters = [
     branch && { key: "branch", label: branch, clear: () => setBranch("") },
@@ -168,6 +197,15 @@ export default function BrowsePage() {
     : null;
 
   useEffect(() => {
+    if (semester && subject) {
+      const valid = subjectOptions || [];
+      if (!valid.some((s) => s.value === subject)) {
+        setSubject("");
+      }
+    }
+  }, [semester]);
+
+  useEffect(() => {
     let cancelled = false;
     async function load() {
       setLoading(true);
@@ -181,7 +219,8 @@ export default function BrowsePage() {
         .from("listings")
         .select("*")
         .eq("status", "available")
-        .order("created_at", { ascending: false });
+        .order(sortOrders[sortBy].column, { ascending: sortOrders[sortBy].ascending })
+        .limit(visibleCount);
       if (debouncedSearch.trim()) {
         const p = `%${debouncedSearch.trim()}%`;
         query = query.or(
@@ -203,7 +242,11 @@ export default function BrowsePage() {
     return () => {
       cancelled = true;
     };
-  }, [debouncedSearch, branch, semester, resourceType, subject, refreshKey]);
+  }, [debouncedSearch, branch, semester, resourceType, subject, refreshKey, sortBy, visibleCount]);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [debouncedSearch, branch, semester, resourceType, subject, sortBy]);
 
   useEffect(() => {
     if (!isSupabaseConfigured) return;
@@ -425,14 +468,55 @@ export default function BrowsePage() {
         />
       ) : (
         <>
-          <p className="results-count">
-            {listings.length} resource{listings.length !== 1 && "s"} found
-          </p>
+          <div className="results-bar">
+            <p className="results-count">
+              {listings.length} resource{listings.length !== 1 && "s"} found
+            </p>
+            <div className="filter-select filter-select--small">
+              <button
+                className={`filter-select__trigger ${sortOpen ? "filter-select__trigger--open" : ""}`}
+                onClick={() => setSortOpen(!sortOpen)}
+              >
+                <span>{sortLabels[sortBy]}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              {sortOpen && (
+                <div className="filter-select__dropdown">
+                  <div className="filter-select__options">
+                    {Object.entries(sortLabels).map(([key, label]) => (
+                      <button
+                        key={key}
+                        className={`filter-select__option ${sortBy === key ? "filter-select__option--active" : ""}`}
+                        onClick={() => {
+                          setSortBy(key);
+                          setSortOpen(false);
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
           <div className="grid">
             {listings.map((l) => (
               <ListingCard key={l.id} listing={l} />
             ))}
           </div>
+          {listings.length > 0 && (
+            <div className="results-bar results-bar--center">
+              <button
+                className="btn btn--ghost"
+                onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+              >
+                Load more
+              </button>
+            </div>
+          )}
         </>
       )}
     </main>

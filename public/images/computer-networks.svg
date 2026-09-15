@@ -4,6 +4,11 @@
       <stop offset="0%" stop-color="#232526"/>
       <stop offset="100%" stop-color="#414345"/>
     </linearGradient>
+    <linearGradient id="safeZone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0b0c" stop-opacity="0"/>
+      <stop offset="62%" stop-color="#0a0b0c" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#0a0b0c" stop-opacity="0.88"/>
+    </linearGradient>
   </defs>
   <rect width="800" height="600" fill="url(#bg)"/>
   <g fill="#4d96ff">
@@ -18,7 +23,8 @@
     <line x1="515" y1="240" x2="375" y2="320"/>
     <line x1="140" y1="120" x2="380" y2="120"/>
   </g>
-  <text x="310" y="190" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="46" font-weight="bold">NETWORK TOPOLOGY</text>
+  <text x="400" y="185" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="46" font-weight="bold">NETWORK TOPOLOGY</text>
   <circle cx="310" cy="125" r="8" fill="#ff6b6b"/>
-  <text x="310" y="500" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="40" opacity="0.9">Routers &#183; Switches &#183; LAN</text>
+  <rect x="0" y="400" width="800" height="200" fill="url(#safeZone)"/>
+  <text x="400" y="495" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="40" opacity="0.95">Routers &#183; Switches &#183; LAN</text>
 </svg>

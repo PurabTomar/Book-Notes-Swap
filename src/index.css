@@ -3757,6 +3757,777 @@ button:focus-visible {
 }
 
 /* ------------------------------------------------------------
+   34. Auth page
+   ------------------------------------------------------------ */
+.auth-card {
+  max-width: 440px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--neutral-100);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 22px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 9px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.auth-tab--active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-card__header {
+  margin-bottom: 18px;
+}
+
+.auth-card__header .page__title {
+  margin: 0 0 6px;
+}
+
+.auth-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.auth-or {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 18px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ------------------------------------------------------------
+   35. Form helpers
+   ------------------------------------------------------------ */
+.form-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.form-success {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border, var(--border));
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+}
+
+.form-success--hero {
+  text-align: center;
+  padding: 40px 24px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-success__icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--success-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* ------------------------------------------------------------
+   36. Multi-step stepper (Share form)
+   ------------------------------------------------------------ */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 4px 0 24px;
+}
+
+.stepper__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  flex: 0 0 auto;
+}
+
+.stepper__dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
+}
+
+.stepper__item--done .stepper__dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.stepper__label {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stepper__item:not(:last-child)::after {
+  content: "";
+  width: 28px;
+  height: 2px;
+  background: var(--border);
+  margin: 0 10px;
+}
+
+.stepper__item--done:not(:last-child)::after {
+  background: var(--primary);
+}
+
+.radio-pills--wrap .radio-pill {
+  min-width: 0;
+}
+
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.photo-preview--grid {
+  width: 96px;
+  height: 96px;
+}
+
+.photo-preview--grid img {
+  width: 100%;
+  height: 100%;
+}
+
+.photo-upload--tile {
+  width: 96px;
+  height: 96px;
+  padding: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------
+   37. Detail page — gallery, contact, report, related
+   ------------------------------------------------------------ */
+.gallery {
+  width: 100%;
+}
+
+.gallery__main {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: var(--neutral-50);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.gallery__thumbs {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.gallery__thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  transition: border-color var(--transition-base), opacity var(--transition-base);
+}
+
+.gallery__thumb--active {
+  border-color: var(--primary);
+}
+
+.gallery__thumb:hover {
+  opacity: 0.85;
+}
+
+.gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-description {
+  color: var(--neutral-700);
+  line-height: 1.6;
+  margin-top: 18px;
+  white-space: pre-line;
+}
+
+.detail-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.detail-actions-row {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+}
+
+.report-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-base), background var(--transition-base);
+}
+
+.report-btn:hover {
+  color: var(--error);
+  background: var(--error-bg);
+}
+
+.related-section {
+  margin-top: 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.verified-badge {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.verified-badge--big {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  background: var(--success-bg);
+  color: var(--success);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+/* Modal header variant */
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.modal__header h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal__header button {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.modal__header button:hover {
+  background: var(--neutral-100);
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------
+   38. Chat — thread list, conversation, composer
+   ------------------------------------------------------------ */
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.conversation-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.conversation-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.conversation-item--unread {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.conversation-item__avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #5b5cf0, #22d3ee);
+  color: #fff;
+  font-weight: 700;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conversation-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversation-item__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.conversation-item__top strong {
+  font-size: 15px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversation-item__top time {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.conversation-item__mid {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversation-item__preview {
+  font-size: 14px;
+  color: var(--neutral-600);
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page--chat {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.chat-header__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #5b5cf0, #22d3ee);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-header__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header__info strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.chat-header__listing {
+  font-size: 13px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding: 8px 4px;
+  min-height: 340px;
+  max-height: 56vh;
+}
+
+.thread__empty {
+  margin: auto;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 24px;
+}
+
+.bubble {
+  align-self: flex-start;
+  max-width: 78%;
+  background: var(--neutral-100);
+  border-radius: 16px 16px 16px 4px;
+  padding: 10px 14px;
+}
+
+.bubble--mine {
+  align-self: flex-end;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 16px 16px 4px 16px;
+}
+
+.bubble__text {
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.bubble__meta {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 4px;
+}
+
+.composer {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.composer .form-input {
+  flex: 1;
+}
+
+/* ------------------------------------------------------------
+   39. My Listings
+   ------------------------------------------------------------ */
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  max-width: 520px;
+  margin-top: 8px;
+}
+
+.profile-card__name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.profile-card__email {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.profile-card__hint {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.my-listing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-listing {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.my-listing--claimed {
+  opacity: 0.72;
+}
+
+.my-listing__img {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: block;
+}
+
+.my-listing__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.my-listing__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.my-listing__title {
+  font-weight: 600;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.my-listing__meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.my-listing__badge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--neutral-100);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.my-listing__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------
+   40. Guidelines page
+   ------------------------------------------------------------ */
+.guide {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.guide-section {
+  display: flex;
+  gap: 16px;
+}
+
+.guide-section__num {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guide-section__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.guide-section__body {
+  color: var(--neutral-700);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.guide-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guide-cta {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------
+   41. Browse sort + load more
+   ------------------------------------------------------------ */
+.results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.results-bar--center {
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.filter-select--small {
+  flex-shrink: 0;
+}
+
+.filter-select--small .filter-select__trigger {
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
+/* ------------------------------------------------------------
+   42. Bookmark button
+   ------------------------------------------------------------ */
+.bookmark-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background var(--transition-base), transform var(--transition-base);
+}
+
+.bookmark-btn:hover {
+  transform: scale(1.08);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.bookmark-btn--active {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+/* ------------------------------------------------------------
    33. Responsive overrides for new components
    ------------------------------------------------------------ */
 @media (max-width: 768px) {
@@ -3779,6 +4550,60 @@ button:focus-visible {
 
   .page--detail {
     padding-top: 24px;
+  }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .my-listing {
+    align-items: stretch;
+  }
+
+  .my-listing__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+  }
+
+  .stepper {
+    justify-content: space-between;
+  }
+
+  .stepper__label {
+    display: none;
+  }
+
+  .stepper__item:not(:last-child)::after {
+    margin: 0 6px;
+    width: 20px;
+  }
+
+  .results-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-select--small {
+    width: 100%;
+  }
+
+  .bubble {
+    max-width: 88%;
+  }
+
+  .conversation-item {
+    padding: 12px 10px;
+  }
+
+  .modal {
+    max-width: 92vw;
+  }
+
+  .gallery__thumb {
+    width: 52px;
+    height: 52px;
   }
 }
 

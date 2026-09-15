@@ -4,6 +4,11 @@
       <stop offset="0%" stop-color="#3e5151"/>
       <stop offset="100%" stop-color="#5d6d73"/>
     </linearGradient>
+    <linearGradient id="safeZone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1111" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#0b1111" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#0b1111" stop-opacity="0.88"/>
+    </linearGradient>
   </defs>
   <rect width="800" height="600" fill="url(#bg)"/>
   <rect x="180" y="90" width="440" height="380" rx="10" fill="#ffffff"/>
@@ -22,6 +27,6 @@
   </g>
   <text x="400" y="235" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="20" opacity="0.6">Q. Define &amp; explain with a neat diagram...</text>
   <text x="400" y="295" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="20" opacity="0.6">Q. Write short notes on any TWO of the following...</text>
-  <text x="90" y="545" fill="#ffffff" font-family="Arial, sans-serif" font-size="42" font-weight="bold">PREVIOUS YEAR PAPERS</text>
-  <text x="590" y="545" fill="#ffd166" font-family="Arial, sans-serif" font-size="36" font-weight="bold">PYQs</text>
+  <rect x="0" y="420" width="800" height="180" fill="url(#safeZone)"/>
+  <text x="400" y="508" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="42" font-weight="bold">PREVIOUS YEAR PAPERS</text>
 </svg>
