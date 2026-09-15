@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#243949"/>
+      <stop offset="100%" stop-color="#517fa4"/>
+    </linearGradient>
+    <style>.note{font-family:'Comic Sans MS','Segoe Print',cursive;font-size:44px;fill:#fdf6e3;}</style>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="170" y="70" width="460" height="330" rx="12" fill="#fdf6e3" transform="rotate(-2 400 235)"/>
+  <rect x="590" y="70" width="24" height="330" fill="#c0392b" opacity="0.85" transform="rotate(-2 400 235)"/>
+  <g transform="rotate(-2 400 235)">
+    <text x="210" y="150" class="note" transform="rotate(-3 240 130)">The study of algorithms</text>
+    <text x="210" y="210" class="note" transform="rotate(-2 250 190)">begins with understanding</text>
+    <text x="210" y="270" class="note" transform="rotate(-1 260 250)">data structures &amp; complexity</text>
+    <text x="210" y="330" class="note" transform="rotate(-2 270 310)">&#8594; O(n log n) &#183; recursion &#183; DP</text>
+  </g>
+  <text x="400" y="470" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="42" font-weight="bold">HANDWRITTEN NOTES</text>
+</svg>

@@ -1,10 +1,5 @@
-export const CURRENCY = "₹";
-
 export function formatPrice(listing) {
-  if (listing.is_free || listing.price == null) return "Free";
-  const value = Number(listing.price);
-  if (Number.isNaN(value)) return "Free";
-  return `${CURRENCY}${value.toLocaleString("en-IN")}`;
+  return "FREE";
 }
 
 export function timeAgo(dateString) {

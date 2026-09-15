@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f3443"/>
+      <stop offset="100%" stop-color="#34e89e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g transform="translate(400,290)">
+    <path d="M-50 110 L-90 -110 L90 -110 L50 110 Z" fill="none" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/>
+    <rect x="-105" y="-140" width="210" height="40" rx="8" fill="#ffffff" opacity="0.9"/>
+    <path d="M-35 -40 Q0 -70 35 -40" stroke="#ffffff" stroke-width="5" fill="none"/>
+    <circle cx="-70" cy="-40" r="10" fill="#ffd166"/>
+    <circle cx="70" cy="-40" r="10" fill="#ff6b6b"/>
+    <path d="M-20 20 Q10 -10 40 20" stroke="#ffffff" stroke-width="5" fill="none"/>
+    <ellipse cx="0" cy="70" rx="60" ry="18" fill="#ffffff" opacity="0.25"/>
+  </g>
+  <text x="400" y="510" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="42" font-weight="bold">LAB MANUAL &amp; PRACTICALS</text>
+</svg>

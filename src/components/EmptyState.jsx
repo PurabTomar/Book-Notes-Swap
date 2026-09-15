@@ -4,7 +4,7 @@ export default function EmptyState({ icon, title, subtitle, action }) {
       {icon && <div className="empty-state__icon">{icon}</div>}
       <h2 className="empty-state__title">{title}</h2>
       {subtitle && <p className="empty-state__subtitle">{subtitle}</p>}
-      {action}
+      {action && <div className="empty-state__action">{action}</div>}
     </div>
   );
 }

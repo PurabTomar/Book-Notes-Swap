@@ -17,6 +17,8 @@ create table if not exists public.listings (
   contact_email    text,
   contact_phone    text,
   contact_whatsapp text,
+  resource_type  text,
+  branch         text,
   status     text not null default 'available' check (status in ('available', 'sold')),
   created_at timestamptz not null default now()
 );
@@ -26,6 +28,8 @@ create index if not exists listings_subject_idx       on public.listings (subjec
 create index if not exists listings_semester_idx      on public.listings (semester);
 create index if not exists listings_created_at_idx    on public.listings (created_at desc);
 create index if not exists listings_status_idx        on public.listings (status);
+create index if not exists listings_resource_type_idx on public.listings (resource_type);
+create index if not exists listings_branch_idx        on public.listings (branch);
 
 -- 2) Storage bucket for listing photos
 -- Nobody may see a photo unless the bucket "listing-images" exists and is public.
