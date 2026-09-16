@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase, isSupabaseConfigured } from "../lib/supabase.js";
 import { useAuth } from "../lib/AuthContext.jsx";
 import { timeAgo } from "../lib/format.js";
-import { subjectImage, FALLBACK_IMAGE } from "../data/constants.js";
+import { resolveCover, FALLBACK_IMAGE } from "../data/constants.js";
 import EmptyState from "../components/EmptyState.jsx";
 
 export default function MyListingsPage() {
@@ -140,7 +140,7 @@ export default function MyListingsPage() {
             <div className={`my-listing ${l.status === "sold" ? "my-listing--claimed" : ""}`} key={l.id}>
               <Link to={`/listing/${l.id}`} className="my-listing__img">
                 <img
-                  src={l.photo_url || subjectImage(l.subject)}
+                  src={resolveCover(l.subject, l.photo_url)}
                   alt={l.title}
                   onError={(e) => {
                     if (e.currentTarget.src !== FALLBACK_IMAGE) e.currentTarget.src = FALLBACK_IMAGE;

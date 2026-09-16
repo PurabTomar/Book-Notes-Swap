@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c4a6e"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="0" y="0" width="800" height="600" fill="url(#bg)" opacity="0.35"/>
+  <circle cx="120" cy="80" r="220" fill="#ffffff" opacity="0.05"/>
+  <circle cx="700" cy="540" r="260" fill="#000000" opacity="0.06"/>
+  <g transform="translate(400,285)" opacity="0.97">
+    <g transform="translate(-60,-60) scale(1.20)"><circle cx="30" cy="30" r="12" fill="#fff"/><circle cx="70" cy="30" r="12" fill="#fff"/><circle cx="50" cy="72" r="12" fill="#fff"/>
+            <path d="M39 40 44 62M61 40l-6 22" stroke="#fff" stroke-width="6" stroke-linecap="round"/></g>
+  </g>
+  <rect x="36" y="452" width="728" height="112" rx="18" fill="#000000" opacity="0.28"/>
+  <text x="400" y="524" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="42" font-weight="bold">Computer Networks</text>
+</svg>

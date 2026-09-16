@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { timeAgo } from "../lib/format.js";
-import { subjectImage, FALLBACK_IMAGE } from "../data/constants.js";
+import { resolveCover, FALLBACK_IMAGE } from "../data/constants.js";
 
 const RESOURCE_BADGE_COLORS = {
   "Handwritten Notes": { bg: "#f0fdf4", color: "#16a34a" },
@@ -31,7 +31,7 @@ function readBookmarks() {
 
 export default function ListingCard({ listing }) {
   const free = listing.is_free || listing.price == null || Number(listing.price) === 0;
-  const cardImage = listing.photo_url || subjectImage(listing.subject);
+  const cardImage = resolveCover(listing.subject, listing.photo_url);
   const resourceType = listing.resource_type || "Other";
   const badgeStyle = RESOURCE_BADGE_COLORS[resourceType] || RESOURCE_BADGE_COLORS["Other"];
   const [bookmarked, setBookmarked] = useState(() => readBookmarks().includes(listing.id));

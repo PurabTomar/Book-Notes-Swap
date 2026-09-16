@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#164e63"/>
+      <stop offset="50%" stop-color="#0e7490"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g transform="translate(400,255)">
+    <ellipse cx="-150" cy="0" rx="118" ry="46" fill="#ffffff" opacity="0.12" transform="rotate(-12 -150 0)"/>
+    <ellipse cx="150" cy="0" rx="118" ry="46" fill="#ffffff" opacity="0.12" transform="rotate(12 150 0)"/>
+    <path d="M-150 0 A118 46 0 0 0 -152 58 M150 0 A118 46 0 0 1 152 -50" stroke="#a5f3fc" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <circle cx="-40" cy="-40" r="40" fill="#f0f9ff"/>
+    <circle cx="40" cy="40" r="40" fill="#f0f9ff"/>
+    <path d="M-20-20 L20 20" stroke="#0e7490" stroke-width="9" stroke-linecap="round"/>
+  </g>
+  <rect x="40" y="468" width="720" height="96" rx="18" fill="#000000" opacity="0.30"/>
+  <text x="400" y="530" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="40" font-weight="bold">
+    COMPUTER ORGANIZATION
+  </text>
+</svg>

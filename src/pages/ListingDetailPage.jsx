@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase, isSupabaseConfigured } from "../lib/supabase.js";
 import { timeAgo } from "../lib/format.js";
-import { subjectImage, FALLBACK_IMAGE } from "../data/constants.js";
+import { resolveCover, FALLBACK_IMAGE } from "../data/constants.js";
 import { useAuth } from "../lib/AuthContext.jsx";
 import { getOrCreateConversation } from "../lib/chat.js";
 import EmptyState from "../components/EmptyState.jsx";
@@ -251,11 +251,13 @@ export default function ListingDetailPage() {
     );
   }
 
-  const photoUrls = [
+  const realPhotos = [
     ...(listing.photo_urls && Array.isArray(listing.photo_urls) ? listing.photo_urls : []),
-    listing.photo_url,
-    subjectImage(listing.subject),
+    ...(Array.isArray(listing.photos) ? listing.photos.map((p) => p.url).filter(Boolean) : []),
   ];
+  const photoUrls = realPhotos.length > 0
+    ? realPhotos
+    : [resolveCover(listing.subject, listing.photo_url)];
   const resourceType = listing.resource_type || "Other";
   const badgeStyle = RESOURCE_BADGE_COLORS[resourceType] || RESOURCE_BADGE_COLORS["Other"];
   const whatsappNumber = contactToWhatsAppNumber(listing.contact_whatsapp);
