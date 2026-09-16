@@ -8,9 +8,9 @@ import ListingDetailPage from "./pages/ListingDetailPage.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import ConversationPage from "./pages/ConversationPage.jsx";
+import AskAiPage from "./pages/AskAiPage.jsx";
 import MyListingsPage from "./pages/MyListingsPage.jsx";
 import GuidelinesPage from "./pages/GuidelinesPage.jsx";
-import EditListingPage from "./pages/EditListingPage.jsx";
 import ThemeToggle from "./components/ThemeToggle.jsx";
 
 function HomeIcon({ active }) {
@@ -96,8 +96,10 @@ function AppInner() {
               <NavLink to="/chat" className={({ isActive }) => `nav__link ${isActive ? "nav__link--active" : ""}`}>
                 Chat
               </NavLink>
-              {user && (
-                <NavLink to="/my-listings" className={({ isActive }) => `nav__link ${isActive ? "nav__link--active" : ""}`}>
+              <NavLink to="/ask" className={({ isActive }) => `nav__link ${isActive ? "nav__link--active" : ""}`}>
+                Ask AI
+              </NavLink>
+              <NavLink to="/my-listings" className={({ isActive }) => `nav__link ${isActive ? "nav__link--active" : ""}`}>
                   My Listings
                 </NavLink>
               )}
@@ -140,7 +142,9 @@ function AppInner() {
         <Route path="/listing/:id" element={<ListingDetailPage />} />
         <Route path="/listing/:id/edit" element={<EditListingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/ask" element={<AskAiPage />} />
         <Route path="/chat" element={<ChatPage />} />
+        
         <Route path="/chat/:id" element={<ConversationPage />} />
         <Route path="/my-listings" element={<MyListingsPage />} />
         <Route path="/guidelines" element={<GuidelinesPage />} />
