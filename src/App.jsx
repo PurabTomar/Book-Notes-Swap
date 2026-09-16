@@ -11,6 +11,7 @@ import ConversationPage from "./pages/ConversationPage.jsx";
 import MyListingsPage from "./pages/MyListingsPage.jsx";
 import GuidelinesPage from "./pages/GuidelinesPage.jsx";
 import EditListingPage from "./pages/EditListingPage.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 
 function HomeIcon({ active }) {
   return (
@@ -103,6 +104,7 @@ function AppInner() {
             </nav>
 
             <div className="header__actions">
+              <ThemeToggle />
               {loading ? null : user ? (
                 <>
                   <span className="header-user">

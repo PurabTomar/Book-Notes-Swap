@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase, isSupabaseConfigured } from "../lib/supabase.js";
 import {
   BRANCHES,
@@ -141,12 +142,13 @@ function FilterSelect({
 }
 
 export default function BrowsePage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [listings, setListings] = useState([]);
-  const [search, setSearch] = useState("");
-  const [branch, setBranch] = useState("");
-  const [semester, setSemester] = useState("");
-  const [resourceType, setResourceType] = useState("");
-  const [subject, setSubject] = useState("");
+  const [search, setSearch] = useState(searchParams.get("q") || "");
+  const [branch, setBranch] = useState(searchParams.get("branch") || "");
+  const [semester, setSemester] = useState(searchParams.get("semester") || "");
+  const [resourceType, setResourceType] = useState(searchParams.get("resource_type") || "");
+  const [subject, setSubject] = useState(searchParams.get("subject") || "");
   const [loading, setLoading] = useState(true);
   const [dbError, setDbError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -156,6 +158,19 @@ export default function BrowsePage() {
   const [visibleCount, setVisibleCount] = useState(12);
 
   const debouncedSearch = useDebounce(search, 250);
+
+  useEffect(() => {
+    const next = new URLSearchParams();
+    if (debouncedSearch.trim()) next.set("q", debouncedSearch.trim());
+    if (branch) next.set("branch", branch);
+    if (semester) next.set("semester", semester);
+    if (resourceType) next.set("resource_type", resourceType);
+    if (subject) next.set("subject", subject);
+    const query = next.toString();
+    if (searchParams.toString() !== query) {
+      setSearchParams(query, { replace: true });
+    }
+  }, [debouncedSearch, branch, semester, resourceType, subject]);
 
   const PAGE_SIZE = 12;
 

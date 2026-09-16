@@ -2309,26 +2309,33 @@ button:focus-visible {
   }
 }
 
-/* Dark mode (ready for future use) */
-@media (prefers-color-scheme: dark) {
-  /* Uncomment when dark mode is implemented:
-  :root {
-    --bg: #0F1117;
-    --surface: #1A1D27;
-    --text: #F1F5F9;
-    --text-muted: #94A3B8;
-    --text-light: #64748B;
-    --border: #2D3348;
-    --border-hover: #3D4460;
-    --neutral-100: #1E2230;
-    --neutral-200: #2D3348;
-    --neutral-300: #3D4460;
-    --neutral-400: #64748B;
-    --neutral-700: #CBD5E1;
-    --skeleton-from: #1E2230;
-    --skeleton-to: #2D3348;
-  }
-  */
+/* ------------------------------------------------------------
+   Dark mode — toggled via data-theme="dark" on <html>.
+   Colors mirror the light tokens (same hue family, lowered).
+   ------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0F1117;
+  --surface: #1A1D27;
+  --text: #F1F5F9;
+  --text-muted: #94A3B8;
+  --text-light: #64748B;
+  --border: #2D3348;
+  --border-hover: #3D4460;
+  --neutral-100: #1E2230;
+  --neutral-200: #2D3348;
+  --neutral-300: #3D4460;
+  --neutral-400: #64748B;
+  --neutral-700: #CBD5E1;
+  --skeleton-from: #1E2230;
+  --skeleton-to: #2D3348;
+  --primary-light: rgba(139, 92, 246, 0.14);
+  --header-bg: rgba(15, 17, 23, 0.92);
+  --chip-bg: #2D3348;
 }
 
 /* ------------------------------------------------------------
@@ -4611,3 +4618,28 @@ button:focus-visible {
 /* ============================================================
    END OF FILE — Book & Notes Swap Stylesheet
    ============================================================ */
+
+/* ------------------------------------------------------------
+   Theme toggle (sun/moon) — sits in the header actions.
+   Uses currentColor so it follows the active theme tokens.
+   ------------------------------------------------------------ */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--neutral-200, var(--surface));
+}
