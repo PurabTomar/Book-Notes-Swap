@@ -6,9 +6,11 @@
     </linearGradient>
   </defs>
   <rect width="800" height="600" fill="url(#bg)"/>
-  <rect x="0" y="0" width="800" height="600" fill="url(#bg)" opacity="0.35"/>
-  <circle cx="120" cy="80" r="220" fill="#ffffff" opacity="0.05"/>
-  <circle cx="700" cy="540" r="260" fill="#000000" opacity="0.06"/>
+  <rect width="800" height="600" fill="url(#bg)" opacity="0.35"/>
+  <circle cx="400" cy="300" r="330" fill="url(#halo)"/>
+  <rect width="800" height="600" fill="url(#sheen)"/>
+  <rect y="470" width="800" height="130" fill="#000000" opacity="0.18"/>
+  <circle cx="676" cy="120" r="150" fill="#ffffff" opacity="0.06"/>
   <g transform="translate(400,285)" opacity="0.97">
     <g transform="translate(-60,-60) scale(1.20)"><circle cx="50" cy="50" r="20" fill="#fff"/><path d="M50 12v16M50 72v16M12 50h16M72 50h16M24 24l12 12M64 64l12 12M24 76l12-12M64 36l12-12" stroke="#fff" stroke-width="7" stroke-linecap="round"/></g>
   </g>
