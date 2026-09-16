@@ -91,6 +91,126 @@ export default function ListingDetailPage() {
   const [reportBusy, setReportBusy] = useState(false);
   const [reportError, setReportError] = useState("");
 
+  const [saved, setSaved] = useState(false);
+  const [saveBusy, setSaveBusy] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
+  const [commentBusy, setCommentBusy] = useState(false);
+  const [commentError, setCommentError] = useState("");
+
+  useEffect(() => {
+    if (!listing?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("listing_comments")
+        .select("id, user_id, body, created_at")
+        .eq("listing_id", listing.id)
+        .order("created_at", { ascending: true });
+      if (cancelled || error) return;
+      const rows = data ?? [];
+      const ids = [...new Set(rows.map((r) => r.user_id))];
+      let nameMap = {};
+      if (ids.length) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id, display_name")
+          .in("id", ids);
+        for (const p of profiles ?? []) nameMap[p.id] = p.display_name;
+      }
+      setComments(
+        rows.map((r) => ({
+          id: r.id,
+          body: r.body,
+          created_at: r.created_at,
+          author: nameMap[r.user_id] || "Student",
+        }))
+      );
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [listing?.id]);
+
+  async function handleComment(e) {
+    e.preventDefault();
+    if (!listing?.id) return;
+    const body = commentText.trim();
+    if (!body) return;
+    setCommentBusy(true);
+    setCommentError("");
+    const optimistic = {
+      id: Date.now(),
+      body,
+      created_at: new Date().toISOString(),
+      author: user?.email?.split("@")[0] || "You",
+    };
+    const { error } = await supabase
+      .from("listing_comments")
+      .insert({ listing_id: listing.id, user_id: user?.id, body });
+    if (error) {
+      setCommentBusy(false);
+      setCommentError(error.message || "Could not post your doubt.");
+      return;
+    }
+    setComments((prev) => [...prev, optimistic]);
+    setCommentText("");
+    setCommentBusy(false);
+  }
+
+  useEffect(() => {
+    if (!user || !listing?.id) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("listing_saves")
+          .select("listing_id")
+          .eq("listing_id", listing.id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (!cancelled && !error) setSaved(!!data);
+      } catch {
+        // table not created yet (migration-saves.sql) -> stay unsaved, ignore
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [listing?.id, user?.id]);
+
+  async function toggleSave() {
+    if (!user) {
+      setSaveError("Sign in to save listings for later.");
+      return;
+    }
+    if (saveBusy) return;
+    setSaveBusy(true);
+    setSaveError("");
+    try {
+      if (saved) {
+        const { error } = await supabase
+          .from("listing_saves")
+          .delete()
+          .eq("listing_id", listing.id)
+          .eq("user_id", user.id);
+        if (error) throw error;
+        setSaved(false);
+      } else {
+        const { error } = await supabase
+          .from("listing_saves")
+          .insert({ listing_id: listing.id, user_id: user.id });
+        if (error) throw error;
+        setSaved(true);
+      }
+    } catch (e) {
+      setSaveError(e.message || "Could not update your saved list.");
+    } finally {
+      setSaveBusy(false);
+    }
+  }
+
   useEffect(() => {
     let cancelled = false;
 
@@ -408,6 +528,53 @@ export default function ListingDetailPage() {
           </div>
         </section>
       )}
+
+      <section className="detail-comments" id="doubts">
+        <div className="section-title-row">
+          <h2 className="section-title">Doubts</h2>
+          <span className="comment-count">{comments.length}</span>
+        </div>
+        {commentError && <div className="form-error">{commentError}</div>}
+        {comments.length > 0 ? (
+          <ul className="comment-list">
+            {comments.map((c) => (
+              <li key={c.id} className="comment">
+                <div className="comment__meta">
+                  <strong>{c.author}</strong>
+                  <span>{new Date(c.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+                </div>
+                <p className="comment__body">{c.body}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="form-hint">No doubts yet. Be the first to ask the owner a question.</p>
+        )}
+        {user ? (
+          <form className="comment-form" onSubmit={handleComment}>
+            <textarea
+              className="form-textarea"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Ask the owner a doubt... keep it academic."
+              rows={2}
+              maxLength={1000}
+            />
+            <div className="comment-form__row">
+              <span className="comment-form__hint">{commentText.length}/1000</span>
+              <button
+                type="submit"
+                className="btn btn--sm btn--primary"
+                disabled={commentBusy || !commentText.trim()}
+              >
+                {commentBusy ? "Posting..." : "Post doubt"}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <p className="form-hint">Sign in to post a doubt.</p>
+        )}
+      </section>
 
       {reportOpen && (
         <div className="modal-overlay modal-overlay--open" onClick={() => setReportOpen(false)}>
