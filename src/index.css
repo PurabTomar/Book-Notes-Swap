@@ -293,7 +293,11 @@ strong {
 
 .nav__link:hover {
   color: var(--text);
-  background: var(--neutral-100);
+  background: var(--primary-light);
+}
+
+.nav__link:hover svg {
+  color: var(--primary);
 }
 
 .nav__link--active {
@@ -1432,8 +1436,18 @@ strong {
   height: 22px;
 }
 
+.mobile-nav__item:hover {
+  background: var(--primary-light);
+}
+
+.mobile-nav__item:hover svg {
+  color: var(--primary);
+}
+
 .mobile-nav__item--active {
   color: var(--primary);
+  background: var(--primary-light);
+  font-weight: 700;
 }
 
 .mobile-nav__fab {
