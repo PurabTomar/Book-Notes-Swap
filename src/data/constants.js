@@ -101,7 +101,7 @@ export const SEMESTER_SUBJECTS = {
 export const CATEGORIES = [
   { value: "", label: "All" },
   { value: "Book", label: "Books" },
-  { value: "Handwritten Notes", label: "Notes" },
+  { value: "Notes", label: "Notes" },
   { value: "Previous Year Paper", label: "PYQs" },
   { value: "Lab Manual", label: "Lab Manuals" },
   { value: "Engineering Drawing", label: "Drawing" },

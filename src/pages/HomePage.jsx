@@ -44,7 +44,11 @@ export default function HomePage() {
           `title.ilike.${p},subject.ilike.${p},description.ilike.${p}`
         );
       }
-      if (category) query = query.eq("resource_type", category);
+      if (category === "Notes" || category === "Handwritten Notes") {
+        query = query.in("resource_type", ["Handwritten Notes", "PDF Notes"]);
+      } else if (category) {
+        query = query.eq("resource_type", category);
+      }
       const { data, error } = await query;
       if (!cancelled) {
         if (error) setDbError(true);
